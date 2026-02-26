@@ -1,0 +1,30 @@
+# 專案背景與架構指示 (Cookie Clicker MVP)
+
+你好，Cursor！我是這個專案的架構師兼開發者。我們正在使用 React (Vite) 開發一款類似 Cookie Clicker 的 Idle Game。我已經完成了系統分析與架構設計，請你嚴格遵守以下我所定義的「關注點分離 (SoC)」架構與開發原則來輔助我寫程式碼。
+
+## 1. 核心架構：三個房間理論 (嚴格遵守)
+我們的專案分為三個絕對不能越界的「房間」：
+
+* **Room A (資料層 / Store)**：只存放「不可簡化的核心事實 (State)」。絕對不存放任何「計算出來的衍生數值」（如倍率、當前價格），衍生數值必須由邏輯層即時計算。
+* **Room B (邏輯層 / Custom Hooks)**：遊戲的大腦。負責所有的數學公式、條件檢查（如餘額是否足夠）。UI 必須呼叫這裡的函數來做事，不能直接修改資料。
+* **Room C (畫面層 / Components)**：笨元件 (Dumb Components)。只負責「顯示資料」與「傳遞使用者的點擊事件給邏輯層」。UI 絕對不可以有自己的業務邏輯。
+
+## 2. 目錄結構與職責
+請在提供程式碼時，嚴格遵守以下目錄歸屬：
+* `src/constants/` (Config)：存放遊戲不變的規則（例如：建築物基礎價格、基礎產能）。
+* `src/store/` (Room A)：存放遊戲存檔狀態（推薦使用 Zustand 或 React Context）。
+* `src/hooks/` (Room B)：存放業務邏輯（例如：`useGameLogic.js`）。
+* `src/components/` (Room C)：存放 UI 介面。
+
+## 3. 資料模型定義 (Data Model)
+**State (玩家存檔，放在 Store)：**
+```json
+{
+  "cookies": 0,
+  "buildings": {
+    "grandma": 0,
+    "factory": 0
+  },
+  "upgrades": {},
+  "lastSaveData": null
+}
